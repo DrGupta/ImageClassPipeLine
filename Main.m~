@@ -18,15 +18,15 @@ createFileLists(config,expt);
 % Training :
 % Learning Codebook, Coding training images, Learning Classifier
 % -----------------------------
-image_class_training(expt.filelist_training,config.algorithm);
+image_class_training(expt.filelist_training,config);
 
 % -----------------------------
 % Testing :
 % Coding testing images, Classification, Performance evaluation
 % -----------------------------
-image_class_testing(expt.filelist_perm,config.algorithm);
+image_class_testing(expt.filelist_perm,config);
 
 % -----------------------------
 % Report generation, Logging
 % -----------------------------
-acc = accuracy_calcu();
+acc = accuracy_calculate();
