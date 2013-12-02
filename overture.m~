@@ -1,13 +1,114 @@
-function [config, expt] = overture()
+function [config, expt] = overture(configFileName)
 
-clear; % clear memory of previous variables with erroneous data
+% clear memory of previous variables with erroneous data
+clear; 
 
-config = getIniData('config.ini','section','dataset'); % get expt config for paths
+defaultConfigFileName = 'config.ini';
+if nargin == 0
+    configFileName = defaultConfigFileName;
+end
 
+config = ExptConfig(configFileName);
+
+% ------------------------------------------------------------------------
 expt = struct(); % create an empty expt object for data during the expt run
 
 % to log the experiment run record the data and time
 expt.date = date(); 
 expt.time = num2str(now);
+
+% the basic paths to files for the experiment
+expt.dataDir = '/cluster/gupta/DataBase/' ;
+expt.imageDir = '/images/';
+expt.imageFmt = '.jpg';
+expt.exptDir = '/cluster/gupta/Expt/';
+expt.logDir = '/Log/';
+
+% ---------------------------------------------------------------------
+% TODO
+% ---------------------------------------------------------------------
+% create a date and time tag for experiment files
+formatDate = 'ddmmyy';
+expt.date = datestr(now,formatDate);
+% ---------------------------------------------------------------------
+% create directories for files generated during the experiment
+% (file persistence to be decided later)
+% ---------------------------------------------------------------------
+
+% append the dataSetName to the root experiment directory
+expt.currDir = fullfile(expt.exptDir, config.dataSetName);
+
+% create the current experiment directory if it does not already exist
+if ~ exist(expt.currDir,'dir')
+    mkdir(expt.currDir);
+end
+
+if strcmpi(config.dataSetName, 'DPchallenge')
+    expt.dataSetFile = fullfile(expt.dataDir, config.dataSetName, ...
+        'dpchallengeimagelist.txt' );
+end
+
+% create the directories in training and test sub-directoryies
+expt.trainingDir = fullfile(expt.exptDir, config.dataSetName, 'training');
+expt.testingDir = fullfile(expt.exptDir, config.dataSetName, 'testing');
+%
+if ~ exist(expt.trainingDir,'dir')
+    mkdir(expt.trainingDir);
+end
+%
+if ~ exist(expt.testingDir,'dir')
+    mkdir(expt.testingDir);
+end
+%
+
+
+% ---------------------------------------------------------------------
+expt.trainCodeBookDir = fullfile(expt.trainingDir , 'codeBook');
+%
+if ~ exist(expt.trainCodeBookDir,'dir')
+    mkdir(expt.trainCodeBookDir);
+end
+%
+expt.trainCodeVectorDir = fullfile(expt.trainingDir, 'codeVector');
+%
+if ~ exist(expt.trainCodeVectorDir,'dir')
+    mkdir(expt.trainCodeVectorDir);
+end
+%
+expt.trainFeatureDir = fullfile(expt.trainingDir, 'feature');
+%
+if ~ exist(expt.trainFeatureDir,'dir')
+    mkdir(expt.trainFeatureDir);
+end
+%
+expt.trainSVMDir = fullfile(expt.trainingDir, 'svm');
+%
+if ~ exist(expt.trainSVMDir,'dir')
+    mkdir(expt.trainSVMDir);
+end
+%
+expt.trainAttributeDir = fullfile(expt.trainingDir, 'attributes');
+%
+if ~ exist(expt.trainAttributeDir,'dir')
+    mkdir(expt.trainAttributeDir);
+end
+%
+% ---------------------------------------------------------------------
+expt.testCodeBookDir = fullfile(expt.testingDir, 'codeBook');
+%
+if ~ exist(expt.testCodeBookDir,'dir')
+    mkdir(expt.testCodeBookDir);
+end
+%
+expt.testCodeVectorDir = fullfile(expt.testingDir, 'codeVector');
+
+expt.testFeatureDir = fullfile(expt.testingDir, 'feature');
+expt.testSVMDir = fullfile(expt.testingDir, 'svm');
+expt.testAttributeDir = fullfile(expt.testingDir, 'attributes');
+% ---------------------------------------------------------------------
+% the location of images is in a central image dataset repository, it not
+% located in the experiment directory
+expt.imagePath = fullfile(expt.dataDir, config.dataSetName, expt.imageDir);
+
 
 end

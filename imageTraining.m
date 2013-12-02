@@ -1,4 +1,4 @@
-function image_class_training(config, expt)
+function [expt] = imageTraining(config, expt)
 % --------------------------------------------------------------------
 % Extract Features
 % --------------------------------------------------------------------  
@@ -46,7 +46,7 @@ end
         disp(['coding:  the ',num2str(imgID),' th image in class ', num2str(classID), ' is processing'])
 %         code_vector('training', 'training', classID, imgID, config.algorithm);
       
-   end
+
    
 % ======================================================================
 

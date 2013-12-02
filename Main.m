@@ -6,27 +6,38 @@
 % -----------------------------
 
 % clear memory and create paths according to experiment configuration
+% configFileName = '';
 [config, expt] = overture(); 
 
 % -----------------------------
 % build image lists for training and testing
 % -----------------------------
-
-createFileLists(config,expt);
+expt = createFileLists(config,expt);
 
 % -----------------------------
 % Training :
 % Learning Codebook, Coding training images, Learning Classifier
 % -----------------------------
-image_class_training(expt.filelist_training,config.algorithm);
+
+expt = imageTraining(config, expt);
 
 % -----------------------------
 % Testing :
 % Coding testing images, Classification, Performance evaluation
 % -----------------------------
-image_class_testing(expt.filelist_perm,config.algorithm);
+
+% expt = imageTesting(expt.filelist_perm,config.algorithm);
 
 % -----------------------------
 % Report generation, Logging
 % -----------------------------
-acc = accuracy_calcu();
+
+% acc = accuracy_calcu();
+
+% -----------------------------
+% Store the experiment and configuration files at the end of the expt.
+% -----------------------------
+configStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'exptConfig.mat']);
+exptStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'expt.mat']);
+save(configStructFileName, 'config');
+save(exptStructFileName, 'expt');

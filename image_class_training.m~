@@ -1,37 +1,58 @@
-function image_class_training(filelist_training,config)
+function image_class_training(config, expt)
 % --------------------------------------------------------------------
-% 
+% Extract Features
 % --------------------------------------------------------------------  
 
-
-  
-  if(strcmp(config.algorithm.extractFeat,'true'))
-    disp('computing feature descriptors') %   DEBUG:
-    for classID = 1 : config.dataset.nClass   % five class.
-       for imgID = 1 : config.dataset.nImgPerClass_training % 60 training image number in each class.
-          disp(['descriptor: ',num2str(imgID),' image in class ', num2str(classID), ' is processing']) % DEBUG:
-          
-          feature_extraction(filelist,'training',classID,imgID,60,config.algorithm);
-          
-          feature_description('training', 'training', classID, imgID,config.algorithm);
-       end
+if(strcmp(config.extractFeatures,'true'))
+    % ---------------------------------------------------------------
+    % DEBUG
+    % ---------------------------------------------------------------
+    % echo to screen commencement of extraction process
+    disp('extracting features...');
+    
+    % iterate over the training list
+    nTrainImages = max(size(expt.trainList));
+    for count = 1 : nTrainImages
+        extractFeature(expt, config, expt.trainList(count));
     end
-  end
+end
+
+
+% ======================================================================
   
+ 
 % --------------------------------------------------------------------
 % Train codebook
 % --------------------------------------------------------------------    
-   if(strcmp(config.algorithm.trainBook,'true'))
-        codebook_computation();
+   if(strcmp(config.trainCodeBook,'true'))
+       % TODO : if the codebook already exists then computation could be
+       % averted, change this setting later
+       % ------------------------------------------------------------
+       % DEBUG
+       % ------------------------------------------------------------
+       disp('computing codebook...')
+       computeCodeBook(expt);
    end
    
+   
+% ======================================================================
+
+% --------------------------------------------------------------------
+% Encode Training Images
+% --------------------------------------------------------------------   
+   
    disp('code vector computing begins......')
-   for classID = 1 : 5
-      parfor imgID = 1 : 60
+   
         disp(['coding:  the ',num2str(imgID),' th image in class ', num2str(classID), ' is processing'])
-        code_vector('training', 'training', classID, imgID,config.algorithm);
-      end
+        code_vector('training', 'training', classID, imgID, config.algorithm);
+      
    end
+   
+% ======================================================================
+
+% --------------------------------------------------------------------
+% Train classifier
+% --------------------------------------------------------------------
    
    
    %If you don't use SVM as classifier, you can ignore svm_learning
