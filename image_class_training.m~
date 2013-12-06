@@ -1,10 +1,12 @@
-function image_class_training(filelist_training,config)
+function image_class_training(filelist,config,expt)
 % --------------------------------------------------------------------
 % 
 % --------------------------------------------------------------------  
 
 
-  
+% --------------------------------------------------------------------
+% Compute Descriptors for each training image
+% --------------------------------------------------------------------  
   if(strcmp(config.algorithm.extractFeat,'true'))
     disp('computing feature descriptors') %   DEBUG:
     for classID = 1 : config.dataset.nClass   % five class.
@@ -26,22 +28,26 @@ function image_class_training(filelist_training,config)
    end
    
    disp('code vector computing begins......')
-   for classID = 1 : 5
-      parfor imgID = 1 : 60
-        disp(['coding:  the ',num2str(imgID),' th image in class ', num2str(classID), ' is processing'])
-        code_vector('training', 'training', classID, imgID,config.algorithm);
+   for classID = 1 : config.dataset.nClass % 5
+      
+      parfor imgID = 1 : config.dataset.nImgPerClass_training % 60
+        disp(['coding:  ',num2str(imgID),' image in class ', num2str(classID), ' ... '])
+        code_vector('training', 'training', classID, imgID, config.algorithm); %#ok<PFBNS>
       end
    end
    
    
-   %If you don't use SVM as classifier, you can ignore svm_learning
-   %function and set 'is_SVM_used = false'
-   is_SVM_used = false;
+   %If you don't use SVM as classifier, you can ignore svm_learning function and set 'is_SVM_used = false'   
    if strcmp(config.algorithm.svm,'true')
-    is_SVM_used = true;   
+    is_SVM_used = true;
+   else
+    is_SVM_used = false;
    end 
    
+% --------------------------------------------------------------------
+% Call SVM training
+% --------------------------------------------------------------------      
    svm_learning(is_SVM_used); 
    
-   disp('Training phase is done!')
+   disp('Training phase is done!') % DEBUG : echo end of training run
 end
