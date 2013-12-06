@@ -1,4 +1,9 @@
 function [expt] = imageTraining(config, expt)
+% processing training images in the dataset for semantic and entropic
+% content measure
+phase = 'training';
+
+
 % --------------------------------------------------------------------
 % Extract Features
 % --------------------------------------------------------------------  
@@ -30,8 +35,8 @@ end
        % ------------------------------------------------------------
        % DEBUG
        % ------------------------------------------------------------
-       disp('computing codebook...')
-%        computeCodeBook(expt);
+%        disp('computing codebook...')
+      expt = computeCodeBook(expt, config);
    end
    
    
@@ -41,28 +46,48 @@ end
 % Encode Training Images
 % --------------------------------------------------------------------   
    
-   disp('code vector computing begins ...')
+%    disp('code vector computing begins ...')
    
-        disp(['coding:  the ',num2str(imgID),' th image in class ', num2str(classID), ' is processing'])
+%        disp(['coding:  the ',num2str(imgID),' th image in class ', num2str(classID), ' is processing'])
 %         code_vector('training', 'training', classID, imgID, config.algorithm);
-      
+
+disp(expt);
+
+encodeImages(expt,config,phase);
 
    
+% ======================================================================
+
+% --------------------------------------------------------------------
+% Compute the entropy of each image at multiple scales
+% --------------------------------------------------------------------  
+
+computeEntropy(expt, phase);
+
+% --------------------------------------------------------------------
+% Compute the correlation score between the aesthetic rank and entropies
+%
+expt = computeEntropyCorrScore(expt, phase);
+
+% --------------------------------------------------------------------
+
 % ======================================================================
 
 % --------------------------------------------------------------------
 % Train classifier
 % --------------------------------------------------------------------
    
+% Train a classifier using the encoded representation of the images using
+% the entropic descriptors
    
    %If you don't use SVM as classifier, you can ignore svm_learning
    %function and set 'is_SVM_used = false'
-   is_SVM_used = false;
-   if strcmp(config.svm,'true')
-    is_SVM_used = true;   
-   end 
+%    is_SVM_used = false;
+%    if strcmp(config.svm,'true')
+%     is_SVM_used = true;   
+%    end 
    
 %    svm_learning(is_SVM_used); 
    
-   disp('Training phase is done!')
+    disp('Training phase is done!')
 end

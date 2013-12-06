@@ -1,8 +1,5 @@
 function [config, expt] = overture(configFileName)
 
-% clear memory of previous variables with erroneous data
-clear; 
-
 defaultConfigFileName = 'config.ini';
 if nargin == 0
     configFileName = defaultConfigFileName;
@@ -23,6 +20,8 @@ expt.imageDir = '/images/';
 expt.imageFmt = '.jpg';
 expt.exptDir = '/cluster/gupta/Expt/';
 expt.logDir = '/Log/';
+expt.numSamplePerImage = 100;
+expt.dictionarySize = str2double(config.codeNum);
 
 % ---------------------------------------------------------------------
 % TODO
@@ -93,6 +92,12 @@ if ~ exist(expt.trainAttributeDir,'dir')
     mkdir(expt.trainAttributeDir);
 end
 %
+expt.trainEntropyDir = fullfile(expt.trainingDir, 'entropy');
+%
+if ~ exist(expt.trainEntropyDir, 'dir')
+    mkdir(expt.trainEntropydir);
+end
+
 % ---------------------------------------------------------------------
 expt.testCodeBookDir = fullfile(expt.testingDir, 'codeBook');
 %
@@ -124,6 +129,12 @@ if ~ exist(expt.testAttributeDir,'dir')
     mkdir(expt.testAttributeDir);
 end
 %
+expt.testEntropyDir = fullfile(expt.testingDir, 'entropy');
+%
+if ~ exist(expt.testEntropyDir, 'dir')
+    mkdir(expt.testEntropyDir);
+end
+
 % ---------------------------------------------------------------------
 % the location of images is in a central image dataset repository, it not
 % located in the experiment directory
