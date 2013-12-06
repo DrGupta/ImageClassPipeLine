@@ -1,0 +1,60 @@
+[dataset]
+#configuration of dataset
+name=DPchallenge
+nClass=2
+nImgPerClass_training=3000
+nImgPerClass_testing=3000
+training_dir=training
+testing_dir=testing
+permutation=true
+
+
+[algorithm]
+#algorithm settings
+spatialPyramid=true
+pyramidLevel=3
+svm=true
+# feature={sift,surf,gist,phow}
+feature=phow
+#sift,surf,gist,phow
+# nn,knn,sparse,arch,llc
+trainBook=true
+extractFeat=true
+knn=20
+sift_binsize=16
+sift_step=6
+sift_smooth=false
+sift_coder=llc
+surf_coder=llc
+surf_extended=false
+phow_size=[4, 8, 16, 32]
+phow_step=4
+phow_coder=llc
+# phow_color = {gray, rgb, hsv, opponent}
+phow_color=rgb
+
+[coding]
+#feature quantization setting
+codeNum=1000
+clustering=kmeans
+#kmeans, sparse
+downsample=3
+
+
+
+dataSetName=DPchallenge
+numClass=2
+numImageTraining=3000
+numImageTesting=3000
+permutation=false
+spatialPyramid=false
+pyramidLevel=3
+svm=true
+feature=phow
+featSize=[4,8,16,32]
+featStep=4
+featColor=rgb
+trainCodeBook=true
+codeNum=1000
+clustering=kmeans
+downsample=3
