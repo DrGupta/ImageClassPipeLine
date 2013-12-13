@@ -52,7 +52,7 @@ if strcmp(phase, 'training')
                     fprintf('%d: %d\n', expt.trainList(i), entropy(hist(idx,expt.dictionarySize))) 
                     % save the encoded descriptor patches to file                    
                     save(expt.trainImageEncodedMap(num2str(expt.trainList(i))), 'idx');                  
-                    count = count + 1;
+                    cou
 
                 catch errKmeans
                     disp(errKmeans.identifier());

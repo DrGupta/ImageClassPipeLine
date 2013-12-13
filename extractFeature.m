@@ -10,11 +10,6 @@ catch err
     return;
 end
 
-% add a switch structure to check if file already exists
-% if exist(expt.trainImageFeatureMap(num2str(imageID)),'file')
-%    disp('file already exists');
-%    return;
-% end
 
 % ---------------------------------------------------------------------
 % TODO : modify to a switch-case structure for different types of feature

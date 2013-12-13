@@ -4,7 +4,7 @@ if strcmp(expt.phase, 'training')
     nImage = size(expt.trainList,1);
     entropyVec = zeros(nImage,1);
     ratingVec = zeros(nImage,1);
-    %
+    
     for i = 1 : nImage
         entropyFile = expt.trainImageEntropyMap(num2str(expt.trainList(i)));
         if exist(entropyFile, 'file')
@@ -26,18 +26,15 @@ elseif strcmp(expt.phase, 'testing')
     nImage = size(expt.testList,1);
     entropyVec = zeros(nImage,1);
     ratingVec = zeros(nImage,1);
-    %
+    entropyFile = expt.testImageEntropyMap(num2str(expt.testList(i)));
     for i = 1 : nImage
-        entropyFile = expt.testImageEntropyMap(num2str(expt.testList(i)));
-        if exist(entropyFile, 'file')
-            try
-            load(entropyFile, 'imageEntropy');
-            catch err
-                disp(err.identifier());
-            end
-            entropyVec(i) = imageEntropy.entropy;
-            ratingVec(i) = expt.dataSetListMap(num2str(expt.trainList(i)));
+        try
+        load(entropyFile, 'imageEntropy');
+        catch err
+            disp(err.identifier());
         end
+        entropyVec(i) = imageEntropy.entropy;
+        ratingVec(i) = expt.dataSetListMap(num2str(expt.trainList(i)));       
     end
     % compute the correlation score
     expt.entropyVec = entropyVec;

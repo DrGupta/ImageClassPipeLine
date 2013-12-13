@@ -8,7 +8,7 @@
 % clear memory of previous variables with erroneous data
 clear; 
 
-configFileName = 'configPHOW.ini';
+configFileName = 'configPHOW2.ini';
 [config, expt] = overture(configFileName); 
 
 % -----------------------------
@@ -21,14 +21,15 @@ expt = createFileLists(config,expt);
 % Learning Codebook, Coding training images, Learning Classifier
 % -----------------------------
 
+expt.phase = 'training';
 expt = imageTraining(config, expt);
-
 
 % -----------------------------
 % Testing :
 % Coding testing images, Classification, Performance evaluation
 % -----------------------------
 
+% expt.phase = 'testing';
 % expt = imageTesting(expt.filelist_perm,config.algorithm);
 
 % -----------------------------
