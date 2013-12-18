@@ -49,11 +49,11 @@ end
 
     nTrainImages = max(size(expt.trainList));
     for count = 1 : nTrainImages
-%         if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
-            expt = encodeImage(expt, config, expt.trainList(count));
-%         else
-%             fprintf('%s %s\n', expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
-%         end
+         if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
+            expt = encodeImage(expt, config, expt.trainList(count), count);
+         else
+             fprintf('%d %s %s\n', count, expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
+         end
     end
    
 % ======================================================================

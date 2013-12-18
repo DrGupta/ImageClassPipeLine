@@ -1,14 +1,8 @@
-% ImageClassificationPipeline
-% root : /export/home/gupta/Dropbox/CodeX/ImagePipeLine
+function callMain(configFileName)
 
-% -----------------------------
-% house-keeping and data-check
-% -----------------------------
-
-% clear memory of previous variables with erroneous data
-clear; 
-
-configFileName = 'configPHOW2.ini';
+if nargin == 0
+    configFileName = 'configPHOW2.ini';
+end
 [config, expt] = overture(configFileName); 
 
 % -----------------------------
@@ -30,7 +24,7 @@ expt = imageTraining(config, expt);
 % -----------------------------
 
 expt.phase = 'testing';
-expt = imageTesting(config,expt);
+expt = imageTesting(expt.filelist_perm,config.algorithm);
 
 % -----------------------------
 % Report generation, Logging
@@ -45,3 +39,4 @@ configStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'exptConfi
 exptStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'expt.mat']);
 save(configStructFileName, 'config');
 save(exptStructFileName, 'expt');
+end

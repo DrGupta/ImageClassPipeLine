@@ -80,7 +80,7 @@ save(testListFileName, 'testList');
 % feature
 
 expt.trainImagePathMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map key is the image id number
     key = num2str(expt.trainList(count)); 
@@ -91,7 +91,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImagePathMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
    % the map key is the image id number
     key = num2str(expt.testList(count)); 
@@ -104,7 +104,7 @@ end
 % create container for paths to training and test image feature descriptors
 
 expt.trainImageFeatureMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id number
     key = num2str(expt.trainList(count));
@@ -116,7 +116,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageFeatureMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map key is the image id number
     key = num2str(expt.testList(count));
@@ -131,7 +131,7 @@ end
 % create container for paths to training and testing image encoded features
 
 expt.trainImageEncodedMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id nubmer
     key = num2str(expt.trainList(count));
@@ -141,7 +141,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageEncodedMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map keys is the iamge id
     key = num2str(expt.testList(count));
@@ -155,7 +155,7 @@ end
 % create container for paths to training and testing image entropy measure
 
 expt.trainImageEntropyMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id nubmer
     key = num2str(expt.trainList(count));
@@ -165,7 +165,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageEntropyMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map keys is the iamge id
     key = num2str(expt.testList(count));

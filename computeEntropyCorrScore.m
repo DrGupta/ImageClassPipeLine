@@ -18,8 +18,13 @@ if strcmp(expt.phase, 'training')
         end
     end
     % compute the correlation score
+    % --------  REMOVE ------------------------
     expt.entropyVec = entropyVec;
     expt.ratingVec = ratingVec;
+    % -----------------------------------------
+    
+    expt.trainEntropyVec = entropyVec;
+    expt.trainRatingVec = ratingVec;
     
 elseif strcmp(expt.phase, 'testing')
     % correlation computation for testing phase
@@ -40,8 +45,14 @@ elseif strcmp(expt.phase, 'testing')
         end
     end
     % compute the correlation score
+    % --------  REMOVE ------------------------
     expt.entropyVec = entropyVec;
     expt.ratingVec = ratingVec;
+    % -----------------------------------------
+   
+    expt.testEntropyVec = entropyVec;
+    expt.testRatingVec = ratingVec;
+    
 else
     disp('experiment phase not recognized');
     return;

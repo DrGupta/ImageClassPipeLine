@@ -28,13 +28,25 @@ end
 % 
 % ------------------------------------------------------------------------
 
-dataSet
+% remove those images which have a zero rating
+dataSetList = dataSetList(dataSetList(:,2) > 0, :);
+
+
+% create a datasetfilemap that allows mapping of imageID to aesthetic
+% rating score for that image
+expt.dataSetListMap = containers.Map();
+nImages = size(dataSetList,1);
+for count = 1 : nImages
+    key = num2str(dataSetList(count,1));
+    value = dataSetList(count,2);
+    expt.dataSetListMap(key) = value;
+end
 
 % Split the dataSetList into top and bottom half in terms of labels
 % Split each half into training and testing
 % combine the halfs into binary class training and testing lists
 
-nImages = size(dataSetList,1);
+
 % split the dataset into the two classes
 % since the images are sorted in ascending order of rating, the bottom half
 % will be low quality images and top half will be high quality imags
@@ -97,7 +109,9 @@ for count = 1 : nTrainImage
     % the map keys is the image id number
     key = num2str(expt.trainList(count));
     % the map values is the image feature descritor path
-    value = fullfile(expt.trainFeatureDir, [key '.' config.feature]);
+%     value = fullfile(expt.trainFeatureDir, [key '.mat' ]);
+% add the feature type to the file name of the .mat file
+    value = fullfile(expt.trainFeatureDir, [key config.feature '.mat']);
     expt.trainImageFeatureMap(key) = value;
 end
 %
@@ -107,7 +121,9 @@ for count = 1 : nTestImage
     % the map key is the image id number
     key = num2str(expt.testList(count));
     % the map value is the image feature descriptor path
-    value = fullfile(expt.testFeatureDir, [key '.' config.feature]);
+%     value = fullfile(expt.testFeatureDir, [key '.mat']);
+    % add the feature type to the file name of the .mat file
+    value = fullfile(expt.testFeatureDir, [key config.feature '.mat']);
     % add key,value pair to the map
     expt.testImageFeatureMap(key) = value;
 end
@@ -115,12 +131,12 @@ end
 % create container for paths to training and testing image encoded features
 
 expt.trainImageEncodedMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id nubmer
     key = num2str(expt.trainList(count));
     % the map value is the image feature encoded representation path
-    value = fullfile(expt.trainCodeVectorDir, [key  expt.codeVectorFmt]);
+    value = fullfile(expt.trainCodeVectorDir, [key config.feature '.mat']);
     expt.trainImageEncodedMap(key) = value;
 end
 %
@@ -130,11 +146,34 @@ for count = 1 : nTestImage
     % the map keys is the iamge id
     key = num2str(expt.testList(count));
     % the map value is the image feature encoded representation path
-    value = fullfile(expt.testCodeVectorDir, [key expt.codeVectorFmt]);
+    value = fullfile(expt.testCodeVectorDir, [key config.feature '.mat']);
     % add the key,value pair to the map
     expt.testImageEncodedMap(key) = value;
 end
 
+% ------------------------------------------------------------------------
+% create container for paths to training and testing image entropy measure
+
+expt.trainImageEntropyMap = containers.Map();
+nTrainImage = max(size(expt.trainList));
+for count = 1 : nTrainImage
+    % the map keys is the image id nubmer
+    key = num2str(expt.trainList(count));
+    % the map value is the image feature encoded representation path
+    value = fullfile(expt.trainEntropyDir, [key config.feature '.mat']);
+    expt.trainImageEntropyMap(key) = value;
+end
+%
+expt.testImageEntropyMap = containers.Map();
+nTestImage = max(size(expt.testList));
+for count = 1 : nTestImage
+    % the map keys is the iamge id
+    key = num2str(expt.testList(count));
+    % the map value is the image feature encoded representation path
+    value = fullfile(expt.testEntropyDir, [key config.feature '.mat']);
+    % add the key,value pair to the map
+    expt.testImageEntropyMap(key) = value;
+end
 
 
 end

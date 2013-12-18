@@ -1,4 +1,4 @@
-function expt = encodeImage(expt, config, imageID)
+function expt = encodeImage(expt, config, imageID, count)
 
     if strcmp(expt.phase, 'training')
         featurePath = expt.trainImageFeatureMap(num2str(imageID));
@@ -13,6 +13,8 @@ function expt = encodeImage(expt, config, imageID)
         % transpose the descriptor matrix
         descrs = double(descrs');
         dictionary = expt.codeBook;
+        disp(size(dictionary'));
+        disp(size(descrs'));
 
         [~, codeids] = min(vl_alldist(dictionary', descrs'), [], 1);
         
@@ -21,7 +23,7 @@ function expt = encodeImage(expt, config, imageID)
         idx.codeids = codeids;
         idx.idx = ids;
 
-        fprintf('%d: %d\n', imageID, entropy(hist(idx.idx,expt.dictionarySize))) 
+        fprintf('%d %d %d\n', count, imageID, entropy(ids) );
         % save the encoded descriptor patches to file                    
         save(expt.trainImageEncodedMap(num2str(imageID)), 'idx');
     elseif strcmp(expt.phase, 'testing')
@@ -44,7 +46,7 @@ function expt = encodeImage(expt, config, imageID)
         idx.codeids = codeids;
         idx.idx = ids;
 
-        fprintf('%d: %d\n', imageID, entropy(hist(idx.idx,expt.dictionarySize))) 
+        fprintf('%d %d %d\n', count, imageID, entropy(ids) );
         % save the encoded descriptor patches to file                    
         save(expt.testImageEncodedMap(num2str(imageID)), 'idx');
     end

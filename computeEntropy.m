@@ -24,21 +24,25 @@ function expt = computeEntropy(expt, i)
          scaleId = scaleId(:,4);
          imgEntropyScale = zeros(1,numel(image.sizes));
          % size(idx,1) == size(scaleId,1) should assert to true
-         
          for j = 1 : numel(image.sizes)
              size_ = image.sizes(j);
              % encoded patches at a given scale
-             disp(size(scaleId));
-             disp(size(idx.codeids));
-             idxatscale = idx.codeids(scaleId==size_);
+             scaleId = scaleId';             
+             codeids = idx.codeids;
+             idxatscale = codeids(scaleId==size_);
+             
              % entropy of patches at a given scale
-             imgEntropyScale(j) = entropy(idxatscale);
+             if numel(idxatscale) ~= 0
+                imgEntropyScale(j) = entropy(idxatscale);
+             end
+             fprintf('%d %d %d %d %d %d\n', j, size_, numel(scaleId), numel(idx.codeids), imgEntropyScale(j), entropy(idx.idx));
+             
          end
          imageEntropy.entropies = imgEntropyScale;
          imageEntropy.entropy = mean(imgEntropyScale);
-         fprintf('%d\t%d\t%d\n', i, expt.trainList(i), mean(imgEntropyScale));
+         fprintf('%d %d %d\n', i, expt.trainList(i), mean(imgEntropyScale));
          % save to file
-         disp(expt.trainImageEntropyMap(num2str(expt.trainList(i))));
+         fprintf('%d %s\n',i,expt.trainImageEntropyMap(num2str(expt.trainList(i))));
          save(expt.trainImageEntropyMap(num2str(expt.trainList(i))), 'imageEntropy');     
 % ------------------------------------------------------------------------
 % Testing
@@ -76,7 +80,7 @@ function expt = computeEntropy(expt, i)
          imageEntropy.entropy = mean(imgEntropyScale);
          fprintf('%d\t%d\t%d\n', i, expt.testList(i), mean(imgEntropyScale));
          % save to file
-         disp(expt.testImageEntropyMap(num2str(expt.testList(i))));
+         fprintf('%d %s\n',i, expt.testImageEntropyMap(num2str(expt.testList(i))));
          save(expt.testImageEntropyMap(num2str(expt.testList(i))), 'imageEntropy');
     end
 end
