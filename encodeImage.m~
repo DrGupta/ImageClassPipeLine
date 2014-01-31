@@ -1,4 +1,4 @@
-function expt = encodeImage(expt, config, imageID)
+function expt = encodeImage(expt, imageID, count)
 
     if strcmp(expt.phase, 'training')
         featurePath = expt.trainImageFeatureMap(num2str(imageID));
@@ -8,22 +8,31 @@ function expt = encodeImage(expt, config, imageID)
             disp(err.identifier());
             return;
         end
-        % image structure has the descriptors
-        descrs = image.descrs;
-        % transpose the descriptor matrix
-        descrs = double(descrs');
-        dictionary = expt.codeBook;
-
-        [~, codeids] = min(vl_alldist(dictionary', descrs'), [], 1);
-        
-        ids = vl_binsum(zeros(size(dictionary', 2), 1), 1, double(codeids));
-        ids = double(ids);
-        idx.codeids = codeids;
-        idx.idx = ids;
-
-        fprintf('%d: %d\n', imageID, entropy(hist(idx,expt.dictionarySize))) 
+        codeidsArr = [];
+        idsArr = [];
+        for j = 1 : numel(expt.sizes)
+            featSize = str2double(expt.sizes(j));
+            scaleId = image.frame;
+            scaleId = scaleId';
+            % the patch size is in the 4th column
+            scaleId = scaleId(:,4);
+            disp(size(image.de
+            descrs = image.descrs(scaleId==featSize,:);
+            % transpose the descriptor matrix
+            descrs = double(descrs');
+            dictionary = expt.codeBook{j};
+            [~, codeids] = min(vl_alldist(dictionary', descrs'), [], 1);        
+            ids = vl_binsum(zeros(size(dictionary', 2), 1), 1, double(codeids));
+            ids = double(ids);
+            codeidsArr = [codeidsArr , codeids];
+            idsArr = [idsArr , ids];
+        end
+        idx.codeids = codeidsArr;
+        idx.idx = idsArr;
+        fprintf('%d %d %d\n', count, imageID, entropy(idsArr) );
         % save the encoded descriptor patches to file                    
         save(expt.trainImageEncodedMap(num2str(imageID)), 'idx');
+        
     elseif strcmp(expt.phase, 'testing')
         featurePath = expt.testImageFeatureMap(num2str(imageID));
         try
@@ -32,19 +41,27 @@ function expt = encodeImage(expt, config, imageID)
             disp(err.identifier());
             return;
         end
-        % image structure has the descriptors
-        descrs = image.descrs;
-        % transpose the descriptor matrix
-        descrs = double(descrs');
-        dictionary = expt.codeBook;
-
-        [~, codeids] = min(vl_alldist(dictionary', descrs'), [], 1);
-        ids = vl_binsum(zeros(size(dictionary', 2), 1), 1, double(codeids));
-        ids = double(ids);
-        idx.codeids = codeids;
-        idx.idx = ids;
-
-        fprintf('%d: %d\n', imageID, entropy(hist(idx,expt.dictionarySize))) 
+        codeidsArr = [];
+        idsArr = [];
+        for j = 1 : numel(expt.sizes)
+            featSize = expt.sizes(j);
+            scaleId = image.frame;
+            scaleId = scaleId';
+            % the patch size is in the 4th column
+            scaleId = scaleId(:,4); 
+            descrs = image.descrs(scaleId==featSize,:);
+            % transpose the descriptor matrix
+            descrs = double(descrs');
+            dictionary = expt.codeBook{j};
+            [~, codeids] = min(vl_alldist(dictionary', descrs'), [], 1);        
+            ids = vl_binsum(zeros(size(dictionary', 2), 1), 1, double(codeids));
+            ids = double(ids);
+            codeidsArr = [codeidsArr , codeids];
+            idsArr = [idsArr , ids];
+        end
+        idx.codeids = codeidsArr;
+        idx.idx = idsArr;
+        fprintf('%d %d %d\n', count, imageID, entropy(idsArr) );
         % save the encoded descriptor patches to file                    
         save(expt.testImageEncodedMap(num2str(imageID)), 'idx');
     end

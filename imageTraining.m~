@@ -16,7 +16,9 @@ if(strcmp(config.extractFeatures,'true'))
     nTrainImages = max(size(expt.trainList));
     for count = 1 : nTrainImages
         if ~exist(expt.trainImageFeatureMap(num2str(expt.trainList(count))),'file')
+            tic;
             extractFeature(expt, config, expt.trainList(count));
+            fprintf('%d %s %s %s\n',count, expt.trainImageFeatureMap(num2str(expt.trainList(count))), ' computed in ', sprintf(toc);
         end
     end
 end
@@ -29,18 +31,17 @@ end
 % Train codebook
 % --------------------------------------------------------------------    
    if(strcmp(config.trainCodeBook,'true'))
-      codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature 'trainCodeBook.mat']);
-      if ~exist(codeBookPath, 'file')
+      %codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature 'trainCodeBook.mat']);
+      %if ~exist(codeBookPath, 'file')
         disp('computing the dictionary');
         expt = computeCodeBook(expt, config);
-      else
-        fprintf('%s %s\n', codeBookPath, ' already exists.');
-        disp('loading the dictionary from file');
-        load(codeBookPath, 'dictionary');
-        expt.codeBook = dictionary;        
-      end
-   end
-   
+      %else
+      %  fprintf('%s %s\n', codeBookPath, ' already exists.');
+      %  disp('loading the dictionary from file');
+      %  load(codeBookPath, 'dictionary');
+      %  expt.codeBook = dictionary;        
+      %end
+   end   
    
 % ======================================================================
 
@@ -50,13 +51,12 @@ end
 
     nTrainImages = max(size(expt.trainList));
     for count = 1 : nTrainImages
-        if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
-            expt = encodeImage(expt, config, expt.trainList(count));
-        else
-            fprintf('%s %s\n', expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
-        end
+         %if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
+            expt = encodeImage(expt, config, expt.trainList(count), count);
+         %else
+         %    fprintf('%d %s %s\n', count, expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
+         %end
     end
-
    
 % ======================================================================
 
@@ -74,11 +74,11 @@ end
 % --------------------------------------------------------------------
 % Compute the correlation score between the aesthetic rank and entropies
     
-    expt = computeEntropyCorrScore(expt);
+%    expt = computeEntropyCorrScore(expt);
 
 % --------------------------------------------------------------------
 % use the entropic scores of each patch to compute a classifier for the
-% image.
+% image
 
 % ======================================================================
 
@@ -87,16 +87,9 @@ end
 % --------------------------------------------------------------------
    
 % Train a classifier using the encoded representation of the images using
-% the entropic descriptors
-   
-% If you don't use SVM as classifier, you can ignore svm_learning
-% function and set 'is_SVM_used = false'
-%    is_SVM_used = false;
-%    if strcmp(config.svm,'true')
-%     is_SVM_used = true;   
-%    end 
-   
-%    svm_learning(is_SVM_used); 
+% the entropic descriptors  
+
+    expt = trainSVM(expt);
    
     disp('Training phase is done!')
 end

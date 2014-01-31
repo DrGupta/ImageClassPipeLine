@@ -1,9 +1,6 @@
 function [config, expt] = overture(configFileName)
 
-% clear memory of previous variables with erroneous data
-clear; 
-
-defaultConfigFileName = 'config.ini';
+defaultConfigFileName = 'configPHOW2.ini';
 if nargin == 0
     configFileName = defaultConfigFileName;
 end
@@ -23,6 +20,10 @@ expt.imageDir = '/images/';
 expt.imageFmt = '.jpg';
 expt.exptDir = '/cluster/gupta/Expt/';
 expt.logDir = '/Log/';
+expt.numSamplePerImage = 100;
+expt.dictionarySize = str2double(config.codeNum);
+expt.numTrain = config.numImageTraining;
+expt.numTest = config.numImageTesting;
 
 % ---------------------------------------------------------------------
 % TODO
@@ -36,7 +37,9 @@ expt.date = datestr(now,formatDate);
 % ---------------------------------------------------------------------
 
 % append the dataSetName to the root experiment directory
-expt.currDir = fullfile(expt.exptDir, config.dataSetName);
+ expt.currDir = fullfile(expt.exptDir, config.dataSetName);
+
+
 
 % create the current experiment directory if it does not already exist
 if ~ exist(expt.currDir,'dir')
@@ -93,6 +96,12 @@ if ~ exist(expt.trainAttributeDir,'dir')
     mkdir(expt.trainAttributeDir);
 end
 %
+expt.trainEntropyDir = fullfile(expt.trainingDir, 'entropy');
+%
+if ~ exist(expt.trainEntropyDir, 'dir')
+    mkdir(expt.trainEntropydir);
+end
+
 % ---------------------------------------------------------------------
 expt.testCodeBookDir = fullfile(expt.testingDir, 'codeBook');
 %
@@ -101,14 +110,53 @@ if ~ exist(expt.testCodeBookDir,'dir')
 end
 %
 expt.testCodeVectorDir = fullfile(expt.testingDir, 'codeVector');
-
+%
+if ~ exist(expt.testCodeVectorDir,'dir')
+    mkdir(expt.testCodeVectorDir);
+end
+%
 expt.testFeatureDir = fullfile(expt.testingDir, 'feature');
+%
+if ~ exist(expt.testFeatureDir,'dir')
+    mkdir(expt.testFeatureDir);
+end
+%
 expt.testSVMDir = fullfile(expt.testingDir, 'svm');
+%
+if ~ exist(expt.testSVMDir,'dir')
+    mkdir(expt.testSVMDir);
+end
+%
 expt.testAttributeDir = fullfile(expt.testingDir, 'attributes');
+%
+if ~ exist(expt.testAttributeDir,'dir')
+    mkdir(expt.testAttributeDir);
+end
+%
+expt.testEntropyDir = fullfile(expt.testingDir, 'entropy');
+%
+if ~ exist(expt.testEntropyDir, 'dir')
+    mkdir(expt.testEntropyDir);
+end
+
 % ---------------------------------------------------------------------
 % the location of images is in a central image dataset repository, it not
 % located in the experiment directory
 expt.imagePath = fullfile(expt.dataDir, config.dataSetName, expt.imageDir);
+%
+if ~ exist(expt.imagePath,'dir')
+    mkdir(expt.imagePath);
+end
+% -----------------------------------------------------------------------
+% the format of the encoded feature representation of an image
+% TODO : convert to switch-case structure later
+% -----------------------------------------------------------------------
 
+if strcmpi(config.svm, 'true')
+    expt.codeVectorFmt = '.svm';
+else
+    expt.codeVectorFmt = '.svm'; % this is a stub
+end
+    
 
 end

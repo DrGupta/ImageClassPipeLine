@@ -26,6 +26,13 @@ if strcmp(expt.phase, 'training')
     expt.trainEntropyVec = entropyVec;
     expt.trainRatingVec = ratingVec;
     
+    
+    % ---------------------------------------------------
+    % Compute the regression function using entropy vector as 'x' and the
+    % rating vector as 'y'
+    % using libsvm with regression option
+    % ---------------------------------------------------
+    
 elseif strcmp(expt.phase, 'testing')
     % correlation computation for testing phase
     nImage = size(expt.testList,1);
@@ -41,7 +48,7 @@ elseif strcmp(expt.phase, 'testing')
                 disp(err.identifier());
             end
             entropyVec(i) = imageEntropy.entropy;
-            ratingVec(i) = expt.dataSetListMap(num2str(expt.trainList(i)));
+            ratingVec(i) = expt.dataSetListMap(num2str(expt.testList(i)));
         end
     end
     % compute the correlation score
@@ -52,6 +59,12 @@ elseif strcmp(expt.phase, 'testing')
    
     expt.testEntropyVec = entropyVec;
     expt.testRatingVec = ratingVec;
+    
+    % ---------------------------------------------------
+    % Compute the regression function using entropy vector as 'x' and the
+    % rating vector as 'y'
+    
+    % ---------------------------------------------------
     
 else
     disp('experiment phase not recognized');

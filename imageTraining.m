@@ -16,7 +16,9 @@ if(strcmp(config.extractFeatures,'true'))
     nTrainImages = max(size(expt.trainList));
     for count = 1 : nTrainImages
         if ~exist(expt.trainImageFeatureMap(num2str(expt.trainList(count))),'file')
+            ttime = tic;
             extractFeature(expt, config, expt.trainList(count));
+            fprintf('%d %s %s %s\n',count, expt.trainImageFeatureMap(num2str(expt.trainList(count))), ' computed in ', sprintf('%0.3f',toc(ttime)));
         end
     end
 end
@@ -29,7 +31,7 @@ end
 % Train codebook
 % --------------------------------------------------------------------    
    if(strcmp(config.trainCodeBook,'true'))
-      codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature 'trainCodeBook.mat']);
+      codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature num2str(expt.dictionarySize) num2str(expt.numSamplePerImage) 'CodeBook.mat']);
       if ~exist(codeBookPath, 'file')
         disp('computing the dictionary');
         expt = computeCodeBook(expt, config);
@@ -49,11 +51,11 @@ end
 
     nTrainImages = max(size(expt.trainList));
     for count = 1 : nTrainImages
-         if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
-            expt = encodeImage(expt, config, expt.trainList(count), count);
-         else
-             fprintf('%d %s %s\n', count, expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
-         end
+         %if ~exist(expt.trainImageEncodedMap(num2str(expt.trainList(count))), 'file')
+            expt = encodeImage(expt,expt.trainList(count), count);
+         %else
+         %    fprintf('%d %s %s\n', count, expt.trainImageEncodedMap(num2str(expt.trainList(count))), ' already exists.');
+         %end
     end
    
 % ======================================================================
@@ -72,7 +74,7 @@ end
 % --------------------------------------------------------------------
 % Compute the correlation score between the aesthetic rank and entropies
     
-    expt = computeEntropyCorrScore(expt);
+%    expt = computeEntropyCorrScore(expt);
 
 % --------------------------------------------------------------------
 % use the entropic scores of each patch to compute a classifier for the

@@ -10,20 +10,26 @@ testData = [];
 testLabel = [];
 %
 for i = 1 : nTestList
-    % try loading the encoded representation of each image in the test list
-    load(expt.testImageEncodedMap(num2str(expt.testList(i))), 'idx');
-    feat = []; % initialize the idx to null at the start of each iteration in the case where encoded file does not exist
-    feat = idx.idx;
-    testData = vertcat(testData, feat);
-    testLabel = vertcat(testLabel, expt.testList(i,2));
+    try
+        load(expt.testImageEntropyMap(num2str(expt.testList(i))), 'imageEntropy');
+        feat = imageEntropy.entropies;
+        testData = vertcat(testData, feat);
+        testLabel = vertcat(testLabel, expt.testList(i,2));
+    catch err
+        disp(err.identifier());
+    end        
+end
+    
+    
     % ------------------------------------------------------------------
     % use the svm model in the file or in the expt structure
     svmModel = expt.svmModel;    
     [svmPredLabel, svmAcc, svmProbEst] = svmpredict(testLabel, testData, svmModel);
     % store the prediction results to expt structure
-    expt.predLabel = predLabel;
-    expt.acc = acc;
-    expt.probEst = probEst;
+    expt.predLabel = svmPredLabel;
+    expt.acc = svmAcc;
+    expt.probEst = svmProbEst;
+    expt.testLabel = testLabel;
     % ------------------------------------------------------------------
     % In case of cross-validation the variable to be stored on the
     % structure will change accordingly
@@ -34,6 +40,4 @@ for i = 1 : nTestList
     save([expt.testSVMDir, 'svmAcc.mat'], 'svmAcc');
     save([expt.testSVMDir, 'svmProbEst.mat'], 'svmProbEst');
     
-end
-
 end

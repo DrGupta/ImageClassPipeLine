@@ -11,6 +11,7 @@ testLabel = [];
 %
 for i = 1 : nTestList
     % try loading the encoded representation of each image in the test list
+    if exist(expt.testImageEncodedMap(num2str(expt.testList(i))))
     load(expt.testImageEncodedMap(num2str(expt.testList(i))), 'idx');
     feat = []; % initialize the idx to null at the start of each iteration in the case where encoded file does not exist
     feat = idx.idx;
@@ -19,18 +20,22 @@ for i = 1 : nTestList
     % ------------------------------------------------------------------
     % use the svm model in the file or in the expt structure
     svmModel = expt.svmModel;    
-    [predLabel, acc, probEst] = svmpredict(testLabel, testData, svmModel);
+    [svmPredLabel, svmAcc, svmProbEst] = svmpredict(testLabel, testData, svmModel);
     % store the prediction results to expt structure
-    expt.predLabel = predLabel;
-    expt.acc = acc;
-    expt.probEst = probEst;
+    expt.predLabel = svmPredLabel;
+    expt.acc = svmAcc;
+    expt.probEst = svmProbEst;
+    expt.testLabel = testLabel;
     % ------------------------------------------------------------------
     % In case of cross-validation the variable to be stored on the
     % structure will change accordingly
     % ------------------------------------------------------------------
     
     % write the results to file
-    save([])
+    save([expt.testSVMDir, 'svmPredLabel.mat'], 'svmPredLabel');
+    save([expt.testSVMDir, 'svmAcc.mat'], 'svmAcc');
+    save([expt.testSVMDir, 'svmProbEst.mat'], 'svmProbEst');
+    
 end
 
 end

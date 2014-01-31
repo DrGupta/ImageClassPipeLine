@@ -3,30 +3,31 @@ classdef ExptConfig < handle
     
     % Dataset Properties
     properties
-        dataSetName; % string = 'DPchallenge'
-        numClass; % double = 2
-        numImageTraining; % double = 3000
-        numImageTesting; % double = 3000
-        permutation; % boolean = false        
+        dataSetName;                        % string = 'DPchallenge'
+        numClass;                           % double = 2
+        numImageTraining;                   % double = 3000
+        numImageTesting;                    % double = 3000
+        permutation;                        % boolean = false        
     end
     
     % Algorithm Properties
     properties
-        spatialPyramid; % boolean = false
-        pyramidLevel; % double = 3
-        svm; % boolean = true
-        feature; % string = 'phow'
-        featSize;% array = [4,8,16,32]
-        featStep;% double = 4
-        featColor; % string = 'rgb'
+        spatialPyramid;                     % boolean = false
+        pyramidLevel;                       % double = 3
+        svm;                                % boolean = true
+        feature;                            % string = 'phow'
+        featSize;                           % array = [4,8,16,32]
+        featStep;                           % double = 4
+        featColor;                          % string = 'rgb'
+        extractFeatures;                    % boolean = true
     end
     
     % Coding Properties
     properties
-        trainCodeBook; % boolean = true
-        codeNum; % double = 1000
-        clustering; % string = 'kmeans'
-        downsample; % double = 3
+        trainCodeBook;                      % boolean = true
+        codeNum;                            % double = 1000
+        clustering;                         % string = 'kmeans'
+        downsample;                         % double = 3
     end
     
     % Constructor
@@ -37,17 +38,19 @@ classdef ExptConfig < handle
                 % dataset
                 self.dataSetName = 'DPchallenge';
                 self.numClass = 2;
-                self.numImageTraining = 3000;
-                self.numImageTesting = 3000;
+                self.numImageTraining = 500;
+                self.numImageTesting = 500;
                 self.permutation = false;
                 % algorithm
                 self.spatialPyramid = false;
                 self.pyramidLevel = 3;
                 self.svm = true;
                 self.feature = 'phow';
-                self.featSize = [4,8,16,32];
-                self.featStep = 4;
+                self.feature = 'phow8';
+                self.featSize = [8,16,24,32,40,48,56,64,72,80,88,96,104,112,120,128,136,144,152];
+                self.featStep = 8;
                 self.featColor = 'rgb';
+                self.extractFeatures = true;
                 % coding
                 self.trainCodeBook = true;
                 self.codeNum = 1000;
@@ -88,6 +91,7 @@ classdef ExptConfig < handle
                     case 'SPATIALPYRAMID'
                         self.spatialPyramid = config.SPATIALPYRAMID;
                     case 'PYRAMIDLEVEL'
+                        self.pyramidLevel = config.PYRAMIDLEVEL;
                     case 'SVM'
                         self.svm = config.SVM;
                     case 'FEATURE'
@@ -95,7 +99,7 @@ classdef ExptConfig < handle
                     case 'FEATSIZE'
                         self.featSize = config.FEATSIZE;
                     case 'FEATSTEP'
-                        self.featSetp = config.FEATSTEP;
+                        self.featStep = config.FEATSTEP;
                     case 'FEATCOLOR'
                         self.featColor = config.FEATCOLOR;
                     case 'TRAINCODEBOOK'
@@ -106,6 +110,8 @@ classdef ExptConfig < handle
                         self.clustering = config.CLUSTERING;
                     case 'DOWNSAMPLE'
                         self.downsample = config.DOWNSAMPLE;
+                    case 'EXTRACTFEATURES'
+                        self.extractFeatures = config.EXTRACTFEATURES;
                     otherwise
                         fprintf('%s : %s',fieldNames{i}, 'unrecognized');
                 end

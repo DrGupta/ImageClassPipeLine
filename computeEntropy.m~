@@ -30,11 +30,16 @@ function expt = computeEntropy(expt, i)
              scaleId = scaleId';             
              codeids = idx.codeids;
              idxatscale = codeids(scaleId==size_);
+              
              
              % entropy of patches at a given scale
-             imgEntropyScale(j) = entropy(idxatscale);
-             fprintf('%d %d %d %d %d %d\n', j, size_, numel(scaleId), numel(idx.codeids), imgEntropyScale(j), entropy(idx.idx));
-             fprintf('%d, %d', );
+             if numel(idxatscale) ~= 0
+                imgEntropyScale(j) = entropy(idxatscale);
+             end
+             
+             
+             fprintf('%d %d %d %d\n', j, size_, imgEntropyScale(j), entropy(idx.idx));
+             
          end
          imageEntropy.entropies = imgEntropyScale;
          imageEntropy.entropy = mean(imgEntropyScale);
@@ -72,7 +77,14 @@ function expt = computeEntropy(expt, i)
              % encoded patches at a given scale
              idxatscale = idx.codeids(scaleId==size_);
              % entropy of patches at a given scale
-             imgEntropyScale(j) = entropy(idxatscale);
+             % check for empty idxatscale
+             
+             % entropy of patches at a given scale
+             if numel(idxatscale) ~= 0
+                imgEntropyScale(j) = entropy(idxatscale);
+             end
+             fprintf('%d %d %d %d\n', j, size_, imgEntropyScale(j), entropy(idx.idx));
+             
          end
          imageEntropy.entropies = imgEntropyScale;
          imageEntropy.entropy = mean(imgEntropyScale);

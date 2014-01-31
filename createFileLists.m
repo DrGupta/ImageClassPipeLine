@@ -50,6 +50,7 @@ end
 % split the dataset into the two classes
 % since the images are sorted in ascending order of rating, the bottom half
 % will be low quality images and top half will be high quality imags
+
 imgLow = dataSetList(1:nImages/2);
 imgHigh = dataSetList(nImages/2:nImages);
 % the number of low and high quality images
@@ -64,9 +65,23 @@ imgLow = zeros(nLow,2);
 imgHigh = ones(nHigh,2);
 imgLow(:,1) = imgLowPerm;
 imgHigh(:,1) = imgHighPerm;
+
+% -----------------------------------------------------------------
+
 % take half of each class images to training and testing sets
-trainList = vertcat(imgLow(1 : nLow/2, :), imgHigh(1 : nHigh/2, :));
-testList = vertcat(imgLow(nLow/2 : nLow, :), imgHigh(nHigh/2 : nHigh, :));
+% trainList = vertcat(imgLow(1 : nLow/2, :), imgHigh(1 : nHigh/2, :));
+% testList = vertcat(imgLow(nLow/2 : nLow, :), imgHigh(nHigh/2 : nHigh,
+% :));
+%
+%trainList = vertcat(imgLow(1:expt.numTrain/2,:), imgHigh(1:expt.numTrain/2,:));
+%testList = vertcat(imgLow(expt.numTrain/2: expt.numTrain/2 + expt.numTest/2, :), imgHigh(expt.numTrain/2 : expt.numTrain/2 + expt.numTest/2, :));
+%
+nTrain = str2double(expt.numTrain);
+nTest = str2double(expt.numTest);
+
+trainList = vertcat(imgLow( 1 : nTrain, : ), imgHigh( 1 : nTrain, : ));
+testList = vertcat(imgLow(nTrain: nTrain + nTest, :), imgHigh(nTrain : nTrain + nTest, :));
+
 % record the train and test list to the experiment structure
 expt.trainList = trainList;
 expt.testList = testList;
@@ -174,6 +189,5 @@ for count = 1 : nTestImage
     % add the key,value pair to the map
     expt.testImageEntropyMap(key) = value;
 end
-
 
 end

@@ -1,6 +1,6 @@
 function [config, expt] = overture(configFileName)
 
-defaultConfigFileName = 'config.ini';
+defaultConfigFileName = 'configPHOW4.ini';
 if nargin == 0
     configFileName = defaultConfigFileName;
 end
@@ -20,10 +20,13 @@ expt.imageDir = '/images/';
 expt.imageFmt = '.jpg';
 expt.exptDir = '/cluster/gupta/Expt/';
 expt.logDir = '/Log/';
-expt.numSamplePerImage = 100;
+expt.numSamplePerImage = 200;
 expt.dictionarySize = str2double(config.codeNum);
-
-% ---------------------------------------------------------------------
+expt.numTrain = config.numImageTraining;
+expt.numTest = config.numImageTesting;
+expt.sizes = config.featSize;
+expt.codeBook = cell(1,numel(expt.sizes));
+%------------------------------------------------------------------
 % TODO
 % ---------------------------------------------------------------------
 % create a date and time tag for experiment files
@@ -35,7 +38,9 @@ expt.date = datestr(now,formatDate);
 % ---------------------------------------------------------------------
 
 % append the dataSetName to the root experiment directory
-expt.currDir = fullfile(expt.exptDir, config.dataSetName);
+ expt.currDir = fullfile(expt.exptDir, config.dataSetName);
+
+
 
 % create the current experiment directory if it does not already exist
 if ~ exist(expt.currDir,'dir')

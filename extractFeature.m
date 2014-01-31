@@ -1,6 +1,10 @@
 function [expt] = extractFeature(expt, config, imageID)
 
-imagePath = expt.trainImagePathMap(num2str(imageID));
+if strcmp(expt.phase, 'training')
+    imagePath = expt.trainImagePathMap(num2str(imageID));
+elseif strcmp(expt.phase, 'testing')
+    imagePath = expt.testImagePathMap(num2str(imageID));
+end
 % load the specified image
 try
     img = imread(imagePath);
@@ -45,14 +49,14 @@ if strcmpi(config.feature, 'phow')
     image.width = size(img,2);
     image.id = imageID;
     
-    % save to file
-    save(expt.trainImageFeatureMap(num2str(imageID)), 'image');
-    
-    % -------------------------------------------------------------------
-    % DEBUG
-    % -------------------------------------------------------------------
-    % echo successfully writen descriptor to screen
-    disp(expt.trainImageFeatureMap(num2str(imageID)));
+   % save the image struct to file
+    if strcmp(expt.phase,'training')
+        save(expt.trainImageFeatureMap(num2str(imageID)), 'image'); 
+        %disp(expt.trainImageFeatureMap(num2str(imageID)));
+    elseif strcmp(expt.phase, 'testing')
+        save(expt.testImageFeatureMap(num2str(imageID)), 'image');
+        %disp(expt.testImageFeatureMap(num2str(imageID)));
+    end
     
 elseif strcmpi(config.feature, 'dsift')
     % set the parameters according to the configuration file
@@ -82,14 +86,15 @@ elseif strcmpi(config.feature, 'dsift')
     image.height = size(img,2);
     image.id = imageID;
     
-    % save the image struct to file
-    save(expt.trainImageFeatureMap(num2str(imageID)), 'image');
     
-    % -------------------------------------------------------------------
-    % DEBUG
-    % -------------------------------------------------------------------
-    % echo successfully writen descriptor to screen
-    disp(expt.trainImageFeatureMap(num2str(imageID)));
+    % save the image struct to file
+    if strcmp(expt.phase,'training')
+        save(expt.trainImageFeatureMap(num2str(imageID)), 'image'); 
+        %disp(expt.trainImageFeatureMap(num2str(imageID)));
+    elseif strcmp(expt.phase, 'testing')
+        save(expt.testImageFeatureMap(num2str(imageID)), 'image');
+        %disp(expt.testImageFeatureMap(num2str(imageID)));
+    end
     
 end
 

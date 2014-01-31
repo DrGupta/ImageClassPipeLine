@@ -12,7 +12,11 @@ if(strcmp(config.extractFeatures,'true'))
     % iterate over the testing list
     nTestImages = max(size(expt.testList));
     for count = 1 : nTestImages
-        extractFeature(expt, config, expt.testList(count));
+        if ~exist(expt.testImageFeatureMap(num2str(expt.testList(count))),'file')
+            ttime = tic;
+            extractFeature(expt, config, expt.testList(count));
+            fprintf('%d %s %s %s\n',count, expt.testImageFeatureMap(num2str(expt.testList(count))), ' computed in ', sprintf('%0.3f', toc(ttime)));
+        end
     end
 end
 
@@ -29,11 +33,11 @@ end
 
  nTestImages = numel(expt.testList);
     for count = 1 : nTestImages
-%          if ~exist(expt.testImageEncodedMap(num2str(expt.testList(count))), 'file')
-            expt = encodeImage(expt, config, expt.testList(count), count);
-%          else
-%              fprintf('%s %s\n', expt.testImageEncodedMap(num2str(expt.testList(count))), ' already exists.');
-%          end
+          if ~exist(expt.testImageEncodedMap(num2str(expt.testList(count))), 'file')
+            expt = encodeImage(expt, expt.testList(count), count);
+          else
+              fprintf('%d %s %s\n', count, expt.testImageEncodedMap(num2str(expt.testList(count))), ' already exists.');
+          end
     end
 
 % --------------------------------------------------------------------
@@ -52,7 +56,7 @@ end
 % Compute the correlation score between the aesthetic rank and entropies
 %
 
- expt = computeEntropyCorrScore(expt);
+% expt = computeEntropyCorrScore(expt);
 
 % --------------------------------------------------------------------
 % Test classification

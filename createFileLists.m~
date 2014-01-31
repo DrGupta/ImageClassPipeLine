@@ -50,6 +50,7 @@ end
 % split the dataset into the two classes
 % since the images are sorted in ascending order of rating, the bottom half
 % will be low quality images and top half will be high quality imags
+
 imgLow = dataSetList(1:nImages/2);
 imgHigh = dataSetList(nImages/2:nImages);
 % the number of low and high quality images
@@ -64,9 +65,18 @@ imgLow = zeros(nLow,2);
 imgHigh = ones(nHigh,2);
 imgLow(:,1) = imgLowPerm;
 imgHigh(:,1) = imgHighPerm;
+
+% -----------------------------------------------------------------
+
+
+
 % take half of each class images to training and testing sets
 trainList = vertcat(imgLow(1 : nLow/2, :), imgHigh(1 : nHigh/2, :));
 testList = vertcat(imgLow(nLow/2 : nLow, :), imgHigh(nHigh/2 : nHigh, :));
+%
+trainList = vertcat(imgLow(1:expt.))
+
+
 % record the train and test list to the experiment structure
 expt.trainList = trainList;
 expt.testList = testList;
@@ -80,7 +90,7 @@ save(testListFileName, 'testList');
 % feature
 
 expt.trainImagePathMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map key is the image id number
     key = num2str(expt.trainList(count)); 
@@ -91,7 +101,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImagePathMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
    % the map key is the image id number
     key = num2str(expt.testList(count)); 
@@ -104,7 +114,7 @@ end
 % create container for paths to training and test image feature descriptors
 
 expt.trainImageFeatureMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id number
     key = num2str(expt.trainList(count));
@@ -116,7 +126,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageFeatureMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map key is the image id number
     key = num2str(expt.testList(count));
@@ -141,7 +151,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageEncodedMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map keys is the iamge id
     key = num2str(expt.testList(count));
@@ -155,7 +165,7 @@ end
 % create container for paths to training and testing image entropy measure
 
 expt.trainImageEntropyMap = containers.Map();
-nTrainImage = max(size(expt.trainList));
+nTrainImage = numel(expt.trainList);
 for count = 1 : nTrainImage
     % the map keys is the image id nubmer
     key = num2str(expt.trainList(count));
@@ -165,7 +175,7 @@ for count = 1 : nTrainImage
 end
 %
 expt.testImageEntropyMap = containers.Map();
-nTestImage = max(size(expt.testList));
+nTestImage = numel(expt.testList);
 for count = 1 : nTestImage
     % the map keys is the iamge id
     key = num2str(expt.testList(count));

@@ -1,0 +1,17 @@
+dataSetName=DPchallenge
+numClass=2
+numImageTraining=200
+numImageTesting=200
+permutation=false
+spatialPyramid=false
+pyramidLevel=3
+svm=true
+feature=phow
+featSize=4,8,16,24,32,40,48,56,64,72,80,88,96,104,112,120,128
+featStep=4
+featColor=gray
+trainCodeBook=true
+codeNum=1000
+clustering=kmeans
+downsample=3
+extractFeatures=true

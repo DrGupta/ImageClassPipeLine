@@ -8,7 +8,7 @@
 % clear memory of previous variables with erroneous data
 clear; 
 
-configFileName = 'configPHOW2.ini';
+configFileName = 'configPHOW4.ini';
 [config, expt] = overture(configFileName); 
 
 % -----------------------------
@@ -36,7 +36,13 @@ expt = imageTesting(config,expt);
 % Report generation, Logging
 % -----------------------------
 
-% acc = accuracy_calcu();
+expt = classPerformance(expt);
+
+fprintf('%s : %d\n', 'accuracy', expt.accuracy);
+fprintf('%s : %d\n', 'precision', expt.precision);
+fprintf('%s : %d\n', 'recall', expt.recall);
+fprintf('%s : %d\n', 'fmeasure', expt.fmeasure);
+
 
 % -----------------------------
 % Store the experiment and configuration files at the end of the expt.
