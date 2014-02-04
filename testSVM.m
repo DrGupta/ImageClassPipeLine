@@ -5,21 +5,22 @@
 
 function expt = testSVM(expt)
 % create the trainLabel vector and the training feature data matrix
-nTestList =numel(expt.testList);
+nTestList = max(size(expt.testList));
 testData = [];
 testLabel = [];
 %
 for i = 1 : nTestList
     try
-        load(expt.testImageEntropyMap(num2str(expt.testList(i))), 'imageEntropy');
+        load(expt.testImageEntropyMap(num2str(expt.testList(i))));
         feat = imageEntropy.entropies;
-        testData = vertcat(testData, feat);
-        testLabel = vertcat(testLabel, expt.testList(i,2));
+        testData = [testData; feat];
+        testLabel = [testLabel; expt.testList(i,2)];
     catch err
         disp(err.identifier());
     end        
 end
-    
+    size(testData)
+    size(testLabel)
     
     % ------------------------------------------------------------------
     % use the svm model in the file or in the expt structure
@@ -36,8 +37,8 @@ end
     % ------------------------------------------------------------------
     
     % write the results to file
-    save([expt.testSVMDir, 'svmPredLabel.mat'], 'svmPredLabel');
-    save([expt.testSVMDir, 'svmAcc.mat'], 'svmAcc');
-    save([expt.testSVMDir, 'svmProbEst.mat'], 'svmProbEst');
+    save(fullfile(expt.testSVMDir, 'svmPredLabel.mat'), 'svmPredLabel');
+    save(fullfile(expt.testSVMDir, 'svmAcc.mat'), 'svmAcc');
+    save(fullfile(expt.testSVMDir, 'svmProbEst.mat'), 'svmProbEst');
     
 end

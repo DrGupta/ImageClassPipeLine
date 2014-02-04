@@ -38,22 +38,24 @@ classdef ExptConfig < handle
                 % dataset
                 self.dataSetName = 'DPchallenge';
                 self.numClass = 2;
-                self.numImageTraining = 100;
-                self.numImageTesting = 100;
+                self.numImageTraining = 500;
+                self.numImageTesting = 500;
                 self.permutation = false;
                 % algorithm
-                self.spatialPyramid = true;
+                self.spatialPyramid = false;
                 self.pyramidLevel = 3;
                 self.svm = true;
                 %self.feature = 'phow';
                 self.feature = 'phow';
-                self.featSize = [8,16,24,32,40,48,56,64,72,80,88,96,104,112,120,128,136,144,152,160];
+%                 self.featSize =
+%                 [8,16,24,32,40,48,56,64,72,80,88,96,104,112,120,128,136,144,152,160];
+                self.featSize = [8,16,24,32];
                 self.featStep = 8;
                 self.featColor = 'rgb';
                 self.extractFeatures = true;
                 % coding
                 self.trainCodeBook = true;
-                self.codeNum = 100;
+                self.codeNum = 500;
                 self.clustering = 'kmeans';
                 self.downsample = 3;
             elseif nargin == 1

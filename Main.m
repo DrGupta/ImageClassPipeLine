@@ -51,3 +51,8 @@ configStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'exptConfi
 exptStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'expt.mat']);
 save(configStructFileName, 'config');
 save(exptStructFileName, 'expt');
+
+% ---------------------------------
+% House Keeping
+% ---------------------------------
+% Delete feature descriptor, encoded vectors and entropy files

@@ -17,7 +17,7 @@ if(strcmp(config.extractFeatures,'true'))
     for count = 1 : nTrainImages
         if ~exist(expt.trainImageFeatureMap(num2str(expt.trainList(count))),'file')
             ttime = tic;
-            extractFeature(expt, config, expt.trainList(count));
+            extractFeature(expt, expt.trainList(count));
             fprintf('%d %s %s %s\n',count, expt.trainImageFeatureMap(num2str(expt.trainList(count))), ' computed in ', sprintf('%0.3f',toc(ttime)));
         end
     end
@@ -30,18 +30,18 @@ end
 % --------------------------------------------------------------------
 % Train codebook
 % --------------------------------------------------------------------    
-   if(strcmp(config.trainCodeBook,'true'))
-      codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature num2str(expt.dictionarySize) num2str(expt.numSamplePerImage) 'CodeBook.mat']);
-      if ~exist(codeBookPath, 'file')
-        disp('computing the dictionary');
-        expt = computeCodeBook(expt, config);
-      else
-        fprintf('%s %s\n', codeBookPath, ' already exists.');
-        disp('loading the dictionary from file');
-        load(codeBookPath, 'dictionary');
-        expt.codeBook = dictionary;        
-      end
-   end   
+   %if(strcmp(config.trainCodeBook,'true'))
+      %codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature num2str(expt.dictionarySize) num2str(expt.numSamplePerImage) 'CodeBook.mat']);
+      %if ~exist(codeBookPath, 'file')
+      %  disp('computing the dictionary');
+        expt = computeCodeBook(expt);
+      %else
+      %  fprintf('%s %s\n', codeBookPath, ' already exists.');
+      %  disp('loading the dictionary from file');
+      %  load(codeBookPath, 'dictionary');
+      %  expt.codeBook = dictionary;        
+      %end
+   %end   
    
 % ======================================================================
 
@@ -64,11 +64,16 @@ end
 % Compute the entropy of each image at multiple scales
 % --------------------------------------------------------------------  
     nTrainList =numel(expt.trainList);
+    count = 0;
     for i = 1 : nTrainList
         encodePath = expt.trainImageEncodedMap(num2str(expt.trainList(i)));
         featurePath = expt.trainImageFeatureMap(num2str(expt.trainList(i)));
         if exist(encodePath, 'file') && exist(featurePath, 'file')
             expt = computeEntropy(expt, i);
+            count = count + 1;
+        end
+        if count > str2double(expt.numTrain)
+            break;
         end
     end
 % --------------------------------------------------------------------

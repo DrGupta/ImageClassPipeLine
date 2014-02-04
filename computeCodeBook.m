@@ -1,4 +1,4 @@
-function expt = computeCodeBook(expt, config)
+function expt = computeCodeBook(expt)
 % compute a codebook (or dictionary)
 
 % load a subset of the training images to a matrix which will be utilized
@@ -24,19 +24,19 @@ function expt = computeCodeBook(expt, config)
 
 % Random select 1 % descriptors from each image
 
-numImageTraining = str2double(config.numImageTraining); % number of training images
+numImageTraining = str2double(expt.numTrain); % number of training images
 numSamplePerImage = expt.numSamplePerImage; % number of descriptors to sample from each image
-descrsDim = 128;
-descrsSample = zeros(numImageTraining*numSamplePerImage, descrsDim);
-%
+% descrsDim = 128;
+% descrsSample = zeros(numImageTraining*numSamplePerImage, descrsDim);
+% using k-means clustering to compute codebook
+descrsSample = [];
+dictionarySize = expt.dictionarySize;
+dictionary = cell(1,numel(expt.sizes));
 % ----------------------------------------------------------
 
 % loop for each size of the patch in the descriptor
 for j = 1 : numel(expt.sizes)
-    featSize = expt.sizes(j);
-    dictionarySize = str2double(config.codeNum);
-    
-
+    featSize = str2double(expt.sizes{j});
     for i = 1 : numImageTraining
         try
             featurePath = expt.trainImageFeatureMap(num2str(expt.trainList(i)));
@@ -48,48 +48,39 @@ for j = 1 : numel(expt.sizes)
                 return;
             end
             % transpose the image.frame matrix
-             scaleId = image.frame;
-             scaleId = scaleId';
-             % the patch size is in the 4th column
-             scaleId = scaleId(:,4);
-             
-             descrs = image.descrs(scaleId==featSize,:);
+            scaleId = image.frame(4,:);
+            descrs = image.descrs(:,scaleId==featSize);
             
             % transpose the descriptor matrix
-            descrs = descrs';
-            if sum(sum(descrs,2)==0) ~= 0
-                continue;
-            end            
+            descrs = descrs';            
             nDescrs = size(descrs,1); % the number of rows is the number of descriptor feature vectors
             % randomly selection of 1% of the descriptors
-            rndDescrs = descrs(randsample(nDescrs,numSamplePerImage),:);
-    %       descrsSample( count*numSamplePerImage + 1 : (count+1)*numSamplePerImage , :) = rndDescrs;
-            descrsSample( numSamplePerImage*(i-1)+1 : numSamplePerImage*i, 1:128) = rndDescrs;    
+            if nDescrs > numSamplePerImage
+                rndDescrs = descrs(randsample(nDescrs,numSamplePerImage),:);
+            else
+                rndDescrs = descrs;
+            end
+%           descrsSample( count*numSamplePerImage + 1 : (count+1)*numSamplePerImage , :) = rndDescrs;
+%           descrsSample( numSamplePerImage*(i-1)+1 : numSamplePerImage*i, 1:128) = rndDescrs;   
+            descrsSample = [descrsSample ; rndDescrs];
         catch err
             disp(err.identifier());
         end
-
-
     end
 
-    % using k-means clustering to compute codebook
-
-
-
+    
     % use transpose of the descriptor matrix
     descrsSample = double(descrsSample);
-    fprintf('%d %d %d', j, size(descrsSample,1), size(descrsSample,2));
-    [codebook, ~] = vl_kmeans(descrsSample', dictionarySize, 'verbose','Initialization', 'plusplus', 'MaxNumIterations', 20, 'distance', 'l1');
-
+    [codebook, ~] = vl_kmeans(descrsSample', dictionarySize, 'verbose', 'MaxNumIterations', 100, 'algorithm', 'elkan');
     % transpose the codebook again
-    dictionary = codebook';
-    expt.codeBook{j} = dictionary;
+    dictionary{j} = codebook';
+    expt.codeBook{j} = codebook';
 
 end
 % ----------------------------------------------------------
 % write codebook to file
-codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature num2str(expt.dictionarySize) num2str(expt.numSamplePerImage) 'CodeBook.mat']);
-save(codeBookPath, 'dictionary');
+%codeBookPath = fullfile(expt.trainCodeBookDir, [ config.feature num2str(expt.dictionarySize) num2str(expt.numSamplePerImage) 'CodeBook.mat']);
+%save(codeBookPath, 'dictionary');
 
 
 end

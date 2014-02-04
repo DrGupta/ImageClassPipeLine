@@ -28,7 +28,9 @@ numImageTraining = str2double(config.numImageTraining); % number of training ima
 numSamplePerImage = expt.numSamplePerImage; % number of descriptors to sample from each image
 descrsDim = 128;
 descrsSample = zeros(numImageTraining*numSamplePerImage, descrsDim);
-%
+% using k-means clustering to compute codebook
+
+dictionary = cell(1,numel(expt.sizes));
 % ----------------------------------------------------------
 
 % loop for each size of the patch in the descriptor
@@ -68,22 +70,16 @@ for j = 1 : numel(expt.sizes)
         catch err
             disp(err.identifier());
         end
-
-
     end
 
-    % using k-means clustering to compute codebook
-
-
-
+    
     % use transpose of the descriptor matrix
     descrsSample = double(descrsSample);
-    fprintf('%d %d %d');
-    [codebook, ~] = vl_kmeans(descrsSample', dictionarySize, 'verbose','Initialization', 'plusplus', 'MaxNumIterations', 20, 'distance', 'l1');
-
+    fprintf('%d %d %d', j, size(descrsSample,1), size(descrsSample,2));
+    [codebook, ~] = vl_kmeans(descrsSample', dictionarySize, 'verbose', 'MaxNumIterations', 40);
     % transpose the codebook again
-    dictionary = codebook';
-    expt.codeBook{j} = dictionary;
+    dictionary{j} = codebook';
+    expt.codeBook{j} = codebook';
 
 end
 % ----------------------------------------------------------

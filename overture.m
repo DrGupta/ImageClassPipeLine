@@ -22,10 +22,14 @@ expt.exptDir = '/cluster/gupta/Expt/';
 expt.logDir = '/Log/';
 expt.numSamplePerImage = 200;
 expt.dictionarySize = str2double(config.codeNum);
-expt.numTrain = config.numImageTraining;
-expt.numTest = config.numImageTesting;
+expt.numTrain = (config.numImageTraining);
+expt.numTest = (config.numImageTesting);
 expt.sizes = config.featSize;
 expt.codeBook = cell(1,numel(expt.sizes));
+expt.feature = config.feature;
+expt.featSize = config.featSize;
+expt.featStep = config.featStep;
+expt.featColor = config.featColor;
 %------------------------------------------------------------------
 % TODO
 % ---------------------------------------------------------------------

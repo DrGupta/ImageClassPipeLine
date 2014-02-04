@@ -1,4 +1,4 @@
-function [expt] = extractFeature(expt, config, imageID)
+function [expt] = extractFeature(expt, imageID)
 
 if strcmp(expt.phase, 'training')
     imagePath = expt.trainImagePathMap(num2str(imageID));
@@ -20,15 +20,15 @@ end
 % descriptors including 'phow', 'sift', 'dsift', 'surf', 'gist'
 % ---------------------------------------------------------------------
 
-if strcmpi(config.feature, 'phow')
+if strcmpi(expt.feature, 'phow')
         
     % set the parameters according to the configuration file
     featureParam = containers.Map();
-    featureParam('Step') = str2double(config.featStep);
-    featureParam('Color') = config.featColor;
+    featureParam('Step') = str2double(expt.featStep);
+    featureParam('Color') = expt.featColor;
     % using arrayfun and lambda function to convert cell of strings to
     % array of number inline and assigning it to a map structure
-    featureParam('Sizes') = arrayfun(@(x) str2double(x), config.featSize);
+    featureParam('Sizes') = arrayfun(@(x) str2double(x), expt.featSize);
     % --------------------------------------------------
     % params defined inline. TODO: change to configuration file later on
     featureParam('Fast') = true;
@@ -58,11 +58,11 @@ if strcmpi(config.feature, 'phow')
         %disp(expt.testImageFeatureMap(num2str(imageID)));
     end
     
-elseif strcmpi(config.feature, 'dsift')
+elseif strcmpi(expt.feature, 'dsift')
     % set the parameters according to the configuration file
     featureParam = containers.Map();
-    featureParam('Step') = str2double(config.featStep);
-    featureParam('Size') = str2double(config.featSize);
+    featureParam('Step') = str2double(expt.featStep);
+    featureParam('Size') = str2double(expt.featSize);
     % --------------------------------------------------------------------
     featureParam('Fast') = true;
     featureParam('Verbose') = false;

@@ -5,9 +5,11 @@
 % house-keeping and data-check
 % -----------------------------
 
-% clear memory and create paths according to experiment configuration
-% configFileName = '';
-[config, expt] = overture(); 
+% clear memory of previous variables with erroneous data
+clear; 
+
+configFileName = 'configPHOW4.ini';
+[config, expt] = overture(configFileName); 
 
 % -----------------------------
 % build image lists for training and testing
@@ -19,25 +21,38 @@ expt = createFileLists(config,expt);
 % Learning Codebook, Coding training images, Learning Classifier
 % -----------------------------
 
-% image_class_training(expt.filelist_training,config.algorithm);
+expt.phase = 'training';
+expt = imageTraining(config, expt);
 
 % -----------------------------
 % Testing :
 % Coding testing images, Classification, Performance evaluation
 % -----------------------------
 
-% image_class_testing(expt.filelist_perm,config.algorithm);
+expt.phase = 'testing';
+expt = imageTesting(config,expt);
 
 % -----------------------------
 % Report generation, Logging
 % -----------------------------
 
-% acc = accuracy_calcu();
+expt = classPerformance(expt);
+
+fprintf('%s : %d\n', 'accuracy', expt.accuracy);
+fprintf('%s : %d\n', 'precision', expt.precision);
+fprintf('%s : %d\n', 'recall', expt.recall);
+fprintf('%s : %d\n', 'fmeasure', expt.fmeasure);
+
 
 % -----------------------------
 % Store the experiment and configuration files at the end of the expt.
 % -----------------------------
-configStructFileName = fullfile(expt.currDir, expt.date, 'exptConfig.mat');
-exptStructFileName = fullfile(expt.currDir, expt.date, 'expt.mat');
+configStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'exptConfig.mat']);
+exptStructFileName = fullfile(expt.currDir, expt.logDir, [expt.date 'expt.mat']);
 save(configStructFileName, 'config');
-save
+save(exptStructFileName, 'expt');
+
+% ---------------------------------
+% House Keeping
+% ---------------------------------
+% Delete feature descriptor, encoded vectors and entropy files

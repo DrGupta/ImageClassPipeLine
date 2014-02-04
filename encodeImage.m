@@ -12,13 +12,8 @@ function expt = encodeImage(expt, imageID, count)
         idsArr = [];
         for j = 1 : numel(expt.sizes)
             featSize = str2double(expt.sizes(j));
-            scaleId = image.frame;
-            scaleId = scaleId';
-            % the patch size is in the 4th column
-            scaleId = scaleId(:,4);
-            disp(size(image.descrs))
-            disp(sum(scaleId==featSize))
-            descrs = image.descrs(scaleId==featSize,:);
+            scaleId = image.frame(4,:);          
+            descrs = image.descrs(:,scaleId==featSize);
             % transpose the descriptor matrix
             descrs = double(descrs');
             dictionary = expt.codeBook{j};
@@ -45,12 +40,9 @@ function expt = encodeImage(expt, imageID, count)
         codeidsArr = [];
         idsArr = [];
         for j = 1 : numel(expt.sizes)
-            featSize = expt.sizes(j);
-            scaleId = image.frame;
-            scaleId = scaleId';
-            % the patch size is in the 4th column
-            scaleId = scaleId(:,4); 
-            descrs = image.descrs(scaleId==featSize,:);
+            featSize = str2double(expt.sizes(j));
+            scaleId = image.frame(4,:);
+            descrs = image.descrs(:,scaleId==featSize);
             % transpose the descriptor matrix
             descrs = double(descrs');
             dictionary = expt.codeBook{j};

@@ -1,6 +1,6 @@
 function [config, expt] = overture(configFileName)
 
-defaultConfigFileName = 'configPHOW2.ini';
+defaultConfigFileName = 'configPHOW4.ini';
 if nargin == 0
     configFileName = defaultConfigFileName;
 end
@@ -20,12 +20,13 @@ expt.imageDir = '/images/';
 expt.imageFmt = '.jpg';
 expt.exptDir = '/cluster/gupta/Expt/';
 expt.logDir = '/Log/';
-expt.numSamplePerImage = 100;
+expt.numSamplePerImage = 200;
 expt.dictionarySize = str2double(config.codeNum);
-expt.numTrain = config.numImageTraining;
-expt.numTest = config.numImageTesting;
-
-% ---------------------------------------------------------------------
+expt.numTrain = str2double(config.numImageTraining);
+expt.numTest = str2double(config.numImageTesting);
+expt.sizes = config.featSize;
+expt.codeBook = cell(1,numel(expt.sizes));
+%------------------------------------------------------------------
 % TODO
 % ---------------------------------------------------------------------
 % create a date and time tag for experiment files

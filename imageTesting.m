@@ -14,7 +14,7 @@ if(strcmp(config.extractFeatures,'true'))
     for count = 1 : nTestImages
         if ~exist(expt.testImageFeatureMap(num2str(expt.testList(count))),'file')
             ttime = tic;
-            extractFeature(expt, config, expt.testList(count));
+            extractFeature(expt, expt.testList(count));
             fprintf('%d %s %s %s\n',count, expt.testImageFeatureMap(num2str(expt.testList(count))), ' computed in ', sprintf('%0.3f', toc(ttime)));
         end
     end
@@ -33,11 +33,11 @@ end
 
  nTestImages = numel(expt.testList);
     for count = 1 : nTestImages
-          if ~exist(expt.testImageEncodedMap(num2str(expt.testList(count))), 'file')
+          %if ~exist(expt.testImageEncodedMap(num2str(expt.testList(count))), 'file')
             expt = encodeImage(expt, expt.testList(count), count);
-          else
-              fprintf('%d %s %s\n', count, expt.testImageEncodedMap(num2str(expt.testList(count))), ' already exists.');
-          end
+          %else
+          %    fprintf('%d %s %s\n', count, expt.testImageEncodedMap(num2str(expt.testList(count))), ' already exists.');
+          %end
     end
 
 % --------------------------------------------------------------------
@@ -45,11 +45,16 @@ end
 % -------------------------------------------------------------------- 
 
  nTestList =numel(expt.testList);
+ count = 0;
     for i = 1 : nTestList
         encodePath = expt.testImageEncodedMap(num2str(expt.testList(i)));
         featurePath = expt.testImageFeatureMap(num2str(expt.testList(i)));
         if exist(encodePath, 'file') && exist(featurePath, 'file')
             expt = computeEntropy(expt, i);
+            count = count + 1;
+        end
+        if count > str2double(expt.numTest)
+            break;
         end
     end
 % --------------------------------------------------------------------

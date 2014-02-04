@@ -76,8 +76,9 @@ imgHigh(:,1) = imgHighPerm;
 %trainList = vertcat(imgLow(1:expt.numTrain/2,:), imgHigh(1:expt.numTrain/2,:));
 %testList = vertcat(imgLow(expt.numTrain/2: expt.numTrain/2 + expt.numTest/2, :), imgHigh(expt.numTrain/2 : expt.numTrain/2 + expt.numTest/2, :));
 %
-nTrain = str2double(expt.numTrain);
-nTest = str2double(expt.numTest);
+% Correcting error in number of high and low quality images
+nTrain = str2double(expt.numTrain)/2;
+nTest = str2double(expt.numTest)/2;
 
 trainList = vertcat(imgLow( 1 : nTrain, : ), imgHigh( 1 : nTrain, : ));
 testList = vertcat(imgLow(nTrain: nTrain + nTest, :), imgHigh(nTrain : nTrain + nTest, :));
